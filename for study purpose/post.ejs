@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>POST_TITLE | Node.js Blog</title>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="   crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <style>
+        body {
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
+        .input-edit{
+            display: block;
+        }
+        input.input-edit{
+            width: 100%;
+        }
+        .create-modal{
+          margin-bottom:10px;
+        }
+    </style>
+</head>
+<body>
+  
+    <!-- Button create modal -->
+    <button type="button" class="btn btn-primary create-modal" data-toggle="modal" data-target="#exampleModal">
+      Create 
+     </button>
+     <!-- Modal Create -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Tao bai viet moi</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body create-modal">
+        <label for="title" class="input-edit"> title: </label>
+            <input type="text" class="input-edit" id="title-modal-create" name="title">
+            <label for="title" class="input-edit"> content: </label>
+            <input type="text" id="content-modal-create"  class="input-edit" name="content">
+            <label for="title" class="input-edit"> author: </label>
+            <input type="text" id="author-modal-create" class="input-edit" name="author">
+      </div>
+      <div class="modal-footer create-modal">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary save-create">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="container">
+        
+        <%for(var i = 0;i<data.length;i++){%>
+           
+            <div style="border: 1px solid black;">
+                <p>Tiêu đề: <%=data[i].title%>  </p>
+                <p>Bài viết: <%= data[i].content%> </p>
+                <p>Tác giả: <%=data[i].author%>  </p>
+
+                <!-- Button trigger modal edit -->
+                <button type="button" data-id='<%= data[i]._id %>'  class="btn btn-primary edit-modal" data-toggle="modal" data-target="#edit">
+                    Edit
+                </button>
+                  <!-- Button trigger modal delete -->
+               <button type="button" class="btn btn-danger delete-modal" data-toggle="modal" data-target="#exampleModal">
+                Delete
+               </button>
+            </div>
+
+        <%}%>
+
+
+
+<!-- Delete Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">DELETE POST</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body modal-delete">
+        Ban co muon xoa bai viet nay vinh vien hay khong?
+      </div>
+      <div class="modal-footer modal-delete-footer">
+      
+      </div>
+    </div>
+  </div>
+</div>
+
+  <!-- edit Modal -->
+  <div class="modal fade" data-id="" id="edit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel"> Sua bai viet </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body modal-edit">
+            
+        </div>
+        <div class="modal-footer modal-edit-footer">         
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+
+    </div>
+</body>
+<script>
+    var ajax = $.ajax
+
+    function save(id){
+        console.log(id,"id");
+      ajax({
+        url:"/users/post/"+id,
+        type:"PUT",
+        data:{
+          title:$("#title-modal").val(),
+          content:$("#content-modal").val(),
+          author:$("#author-modal").val(),
+        }
+      }).then(function(data){
+       window.location.href="/users/post"
+      })
+    }
+
+    function deletePost(id){
+      ajax({
+        url:"/users/post/"+id,
+        type:"DELETE",
+      }).then(function(data){
+       window.location.href="/users/post"
+      })
+    }
+
+
+    // edit modal-khi click vao se hien ra san title,content, author trong phan o dien, sau khi sua va save lai thi se save tren database
+
+    $('.edit-modal').on("click", function () {
+     var id = $(this).attr("data-id");
+   
+     
+     ajax({
+         url: "/users/post/"+id,
+         type:"get"
+     }).then(function(data){
+      $(".modal-edit").html("")
+      $(".modal-edit-footer").html("")
+      var template=`
+            <label for="title" class="input-edit"> title: </label>
+            <input type="text" class="input-edit" value=${data[0].title} id="title-modal" name="title">
+            <label for="title" class="input-edit"> content: </label>
+            <input type="text" id="content-modal" value=${data[0].content} class="input-edit" name="content">
+            <label for="title" class="input-edit"> author: </label>
+            <input type="text" id="author-modal" value=${data[0].author} class="input-edit" name="author">
+    `
+    var templateBtn=`
+      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+       <button type="button" onclick=save('${data[0]._id}') id="save" class="btn btn-primary">Save changes</button>
+     
+    `
+    $(".modal-edit-footer").append(templateBtn)
+    $(".modal-edit").append(template)
+     })
+    //  $(".modal-body #eventId").val( eventId );
+});
+
+
+
+// Delete -khi click vao nut delete thi se xoa bai viet, tim cach lay id cua ng dung, dung ajax de truyen du lieu len database (url method), $().html()se giup xoa phan html de tranh lap lai template, sau do nhơ append lai template o cuoi
+
+$('.delete-modal').on("click", function () {
+     var id = $(this).attr("data-id");
+   
+     
+     ajax({
+         url: "/users/post/"+id,
+         type:"delete"
+     }).then(function(data){
+      
+      $(".modal-delete-footer").html("")
+     
+    var templateBtnDelete=`
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+    <button type="button" class="btn btn-danger" onClick=delete('${data[0]._id}') id='delete'>Delete</button>
+    `
+   
+    $(".modal-delete-footer").append(templateBtnDelete)
+     })
+   
+});
+
+$('.save-create').on("click", function(){
+  ajax({
+    url:"/users/addpost",
+    type:'POST',
+    data:{
+      title: $("#title-modal-create").val(),
+      content: $("#content-modal-create").val(),
+      author: $("#author-modal-create").val(),
+    }
+  }).then(function(data){
+      window.location.href="/users/post"
+    })
+});
+
+
+
+</script>
+</html>

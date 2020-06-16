@@ -2,17 +2,27 @@
   <div id="app">
     <img alt="Vue logo" src="./assets/logo.png" />
     <Login>hello</Login>
+    <Post/>
+    
+    
+    
+   
   </div>
 </template>
 
 <script>
 import Login from "./components/Login.vue";
+import Post from "./components/Post.vue"
+
 export default {
   name: "App",
   components: {
-    Login
+    Login,
+    Post,
+    
   }
 };
+
 </script>
 
 
